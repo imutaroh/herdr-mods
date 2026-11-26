@@ -21,7 +21,7 @@ On macOS, the tab is the subtitle and the message the body, and alerts from one 
 Every 500ms, from `cx.timer.every`, never from render, it compares each agent's status in `agents()` with the last look, kept by address:
 
 - To `blocked`: post `NEEDS YOU`.
-- To `done`: post `DONE` only if it was `working` or `blocked` before, and the person isn't looking: Herdr's `window().active` is false, or `focused().tab` isn't the agent's tab.
+- To `done`: post `DONE` only if it was `working` or `blocked` before, and the person isn't looking: Herdr's `window().active` is false, or `focused().tab` isn't the agent's tab. With `alerts.done_in_view` on, looking doesn't stop it.
 - No change, any other status, a sub-agent (a terminal in `terminals()` with a `parent`), or a kind turned off in the settings: nothing.
 - Agents present when the mod starts count as seen. A new agent posts on its first status if that's `blocked`. An agent that leaves is forgotten.
 - On macOS, the Dock badge counts blocked agents except sub-agents, and clears when none remain.
@@ -43,7 +43,7 @@ A failed `exec` is logged once. On any platform but `linux` and `macos` (`window
 
 Built and tested against Herdr 0.1.16.
 
-`mods/better-alerts/`: `main.js`, `words.js` (what a notification says; no Herdr calls), `settings.js` (shared between this repo's mods), `mod.json` (`place: none`, title Better Alerts), `mod.schema.json` (its settings with their defaults, which the code's `DEFAULT_SETTINGS` must match: `alerts.blocked` and `alerts.done`, both true). It uses `agents`, `terminals`, `focused`, `window`, `appHome`, `exec` and `hc` from `herdr`, and `div` from gpui-kit. Install it as a root `floating` block, `{ "id": "better-alerts", "content": { "mod": "better-alerts" }, "edge": "bottom", "align": "end" }`, in a layout the person owns.
+`mods/better-alerts/`: `main.js`, `words.js` (what a notification says; no Herdr calls), `settings.js` (shared between this repo's mods), `mod.json` (`place: none`, title Better Alerts), `mod.schema.json` (its settings with their defaults, which the code's `DEFAULT_SETTINGS` must match: `alerts.blocked` and `alerts.done`, both true, and `alerts.done_in_view`, false). It uses `agents`, `terminals`, `focused`, `window`, `appHome`, `exec` and `hc` from `herdr`, and `div` from gpui-kit. Install it as a root `floating` block, `{ "id": "better-alerts", "content": { "mod": "better-alerts" }, "edge": "bottom", "align": "end" }`, in a layout the person owns.
 
 `helper/`: `main.swift`, `Info.plist` and `build.sh`, which compiles with `swiftc -O`, copies `Herdr.icns` from Herdr's app (found by bundle id with `mdfind`, else `/Applications/Herdr.app`), signs ad hoc with `codesign --force --sign -`, and moves the app to `bin/HerdrAlerts.app` in the installed mod (or the folder given). `sync.sh` keeps `bin/`.
 
@@ -57,5 +57,5 @@ On macOS, an app run straight from its binary is refused permission without a pr
 
 - `node --test tests/*.test.cjs` and `herdr-app check` pass, and on macOS `helper/build.sh` builds.
 - An agent that asks for permission posts `… / <space> - NEEDS YOU` with its tab and question, once.
-- An agent finishing in a tab you aren't on, or with Herdr behind another window, posts `… / <space> - DONE` with its tab and how its reply began; finishing in the tab you're looking at posts nothing.
+- An agent finishing in a tab you aren't on, or with Herdr behind another window, posts `… / <space> - DONE` with its tab and how its reply began; finishing in the tab you're looking at posts nothing, unless `alerts.done_in_view` is on.
 - On macOS the notification has Herdr's name and icon, and clicking it shows that agent with Herdr in front; on Linux, clicking Open shows that agent, and on Hyprland brings Herdr forward.

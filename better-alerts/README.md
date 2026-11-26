@@ -41,7 +41,7 @@ From a clone of the repository, `sync.sh` copies `mods/better-alerts/` into Herd
 ## Use
 
 - **Needs you:** an agent asks for input or permission.
-- **Finished:** an agent that was working is done, and you weren't looking at it: Herdr was in the background, or another tab was shown.
+- **Finished:** an agent that was working is done, and you weren't looking at it: Herdr was in the background, or another tab was shown. With `alerts.done_in_view` on, it posts when you're looking at it too.
 - **Click** a notification (on Linux, its Open action) and Herdr shows that agent and comes to the front.
 - **What it says:** the title is whose, in which space, and its status, like `Claude Code / lantern-app - NEEDS YOU` or `Codex / trail-notes - DONE`. Under it is the tab, like `Fix the login form`. Then the message: the question an agent that needs you is asking, like `Do you want to make this edit to login.js?`, or how a finished agent's last reply began, cut to about two lines.
 - A tab named like its space, or only by its number, is left out. When the screen holds no question or reply, the message is left out.
@@ -67,6 +67,7 @@ From a clone of the repository, `sync.sh` copies `mods/better-alerts/` into Herd
 | --- | --- | --- |
 | `alerts.blocked` | `true` | A notification when an agent needs you. `false` stops the needs-you notifications. |
 | `alerts.done` | `true` | A notification when an agent finishes while you aren't looking at it. `false` stops the finished ones. |
+| `alerts.done_in_view` | `false` | `true` also posts the finished notification when you're looking at the agent. |
 
 ## Update
 

@@ -133,6 +133,18 @@ test("the notification is handed to notify-send in a detached shell, and a click
   assert.match(script, /hl\.dsp\.focus\(\{ window = "class:\^\(herdr-app\)\$" \}\)'[^\n]*\|\|\n\s*hyprctl dispatch focuswindow 'class:\^\(herdr-app\)\$'/);
 });
 
+test("done_in_view also posts for a finished agent you're looking at", async () => {
+  const h = harness({ settings: { alerts: { done_in_view: true } } });
+  h.live.agents = [h.agent("t1", "working"), h.agent("t2", "idle")];
+  h.live.focused = { tab: "tab-t1" };
+  h.start();
+  await settle();
+  h.live.agents = [h.agent("t1", "done"), h.agent("t2", "done")];
+  await h.tick();
+  // Still only after it was busy: t2 was idle.
+  assert.deepEqual(h.posted().map((p) => p.target.terminal), ["t1"]);
+});
+
 test("each kind of alert can be turned off in the settings", async () => {
   const h = harness({ settings: { alerts: { done: false } } });
   h.live.agents = [h.agent("t1", "working"), h.agent("t2", "working")];
@@ -310,5 +322,5 @@ test("the mod ships its manifest, schema and settings, and docks nowhere", async
   assert.equal(manifest.version, "1.2.0");
   assert.equal(manifest.$schema, "./mod.schema.json");
   const schema = JSON.parse(fs.readFileSync(path.join(root, "mod.schema.json"), "utf8"));
-  assert.deepEqual(Object.keys(schema.properties.settings.properties.alerts.properties), ["blocked", "done"]);
+  assert.deepEqual(Object.keys(schema.properties.settings.properties.alerts.properties), ["blocked", "done", "done_in_view"]);
 });

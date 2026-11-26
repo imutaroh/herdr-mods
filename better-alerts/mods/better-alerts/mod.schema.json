@@ -76,6 +76,12 @@
               "description": "Post a notification when an agent finishes while you aren't looking at it.",
               "type": "boolean",
               "default": true
+            },
+            "done_in_view": {
+              "title": "Finished, even in view",
+              "description": "Also post the finished notification when you're looking at the agent.",
+              "type": "boolean",
+              "default": false
             }
           }
         }

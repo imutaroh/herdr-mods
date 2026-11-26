@@ -9,7 +9,7 @@ import { loadSettings } from "./settings.js";
 import { alert, escapeMarkup } from "./words.js";
 
 // Preferences a person may change in the installed mod.json under `settings`.
-const DEFAULT_SETTINGS = { alerts: { blocked: true, done: true } };
+const DEFAULT_SETTINGS = { alerts: { blocked: true, done: true, done_in_view: false } };
 
 const BUSY = new Set(["working", "blocked"]);
 const CHECK_MS = 500;
@@ -81,7 +81,8 @@ class BetterAlerts extends View {
       if (before === a.status || subAgents.has(a.address)) continue;
       // Only needs-you and finished have a setting, so this also skips every other status.
       if (!this.settings.alerts[a.status]) continue;
-      if (a.status === "done" && (!BUSY.has(before) || looking(a))) continue;
+      // A finished agent you're looking at stays quiet, unless done_in_view asks for it too.
+      if (a.status === "done" && (!BUSY.has(before) || (looking(a) && !this.settings.alerts.done_in_view))) continue;
       this.post(a);
     }
     for (const address of this.seen.keys()) if (!live.has(address)) this.seen.delete(address);
