@@ -2,5 +2,10 @@
   "$schema": "./mod.schema.json",
   "version": "1.2.0",
   "place": "none",
-  "title": "Better Alerts"
+  "title": "Better Alerts",
+  "settings": {
+    "alerts": {
+      "done_in_view": true
+    }
+  }
 }
